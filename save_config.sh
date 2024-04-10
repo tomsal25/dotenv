@@ -3,7 +3,7 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-source .env
+source ./.env
 
 cp -rf "$LOCALAPPDATA/nvim" .
 
