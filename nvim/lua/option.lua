@@ -13,14 +13,16 @@ vim.opt.shiftwidth = 0
 
 -- visualize tab
 vim.opt.list = true
-vim.opt.listchars = {space = " ", tab = "󰁕", trail = "$"}
+vim.opt.listchars = { space = " ", tab = "󰁕", trail = "$" }
 
 vim.opt.showtabline = 2
 
+vim.opt.termguicolors = true
+
 --####-- auto running scripts
 -- remove trailing spaces on save a file
-vim.api.nvim_create_autocmd({"BufWritePre"}, {
-  pattern = {"*"},
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  pattern = { "*" },
   callback = function(ev)
     cursor_pos = vim.fn.getpos(".")
     vim.cmd([[%s/\s\+$//e]])
@@ -29,8 +31,8 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
 })
 
 -- remove trailing line breaks on save a file
-vim.api.nvim_create_autocmd({"BufWritePre"}, {
-  pattern = {"*"},
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  pattern = { "*" },
   callback = function(ev)
     cursor_pos = vim.fn.getpos(".")
     vim.cmd([[%s/\(\r\?\n\)\+\%$//e]])

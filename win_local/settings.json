@@ -32,7 +32,7 @@
             "keys": "alt+shift+d"
         }
     ],
-    "alwaysOnTop": true,
+    "alwaysOnTop": false,
     "alwaysShowNotificationIcon": false,
     "autoHideWindow": false,
     "copyFormatting": "none",
