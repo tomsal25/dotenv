@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# volta settings
+export VOLTA_FEATURE_PNPM=1
+
 # msys compability
 case `uname` in
   *MSYS*)
