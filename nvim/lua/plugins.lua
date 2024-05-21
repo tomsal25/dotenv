@@ -12,15 +12,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  -- window plugin
-  --[[ {
-    "nvim-tree/nvim-tree.lua",
-    config = true,
-    keys = {
-      {mode = "n", "<c-b>", "<cmd>NvimTreeToggle<CR>", desc = "Toggle nvim-tree"}
-    },
-  }, ]]
-
   -- filer
   {
     "lambdalisue/fern.vim",
@@ -41,7 +32,8 @@ require("lazy").setup({
   -- syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
-    lazy = false,
+    evnet = "UIEnter",
+    dependencies = { "neovim/nvim-lspconfig" },
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
@@ -63,8 +55,7 @@ require("lazy").setup({
   },
   {
     "nvim-lualine/lualine.nvim",
-    lazy = false,
-    -- event = "UIEnter",
+    event = "UIEnter",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = true,
   },
