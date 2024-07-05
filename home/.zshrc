@@ -1,15 +1,18 @@
 #!/bin/zsh
 
+# ------------------------------
 # volta settings
 export VOLTA_FEATURE_PNPM=1
 
+
+# ------------------------------
 # msys compability
 case `uname` in
   *MSYS*)
-    # msys make
+    ## msys make
     alias make='mingw32-make'
 
-    # msys key setting
+    ## msys key setting
     bindkey ' ' magic-space                           # do history expansion on space
     bindkey '^U' backward-kill-line                   # ctrl + U
     bindkey '^[[3;5~' kill-word                       # ctrl + Supr
@@ -22,14 +25,23 @@ case `uname` in
     bindkey '^[[F' end-of-line                        # end
     bindkey '^[[Z' undo                               # shift + tab undo last action
 
-    # to make auto-complete worked
-    # https://github.com/msys2/MSYS2-packages/issues/38#issuecomment-150131217
+    ## to make auto-complete worked
+    ## https://github.com/msys2/MSYS2-packages/issues/38#issuecomment-150131217
     drives=$(mount | sed -rn 's#^[A-Z]: on /([a-z]).*#\1#p' | tr '\n' ' ')
     zstyle ':completion:*' fake-files /: "/:$drives"
     unset drives
+
+    ## .vimrc directory
+    export VIMRC_PATH=$(cygpath -w "$HOME/.vimrc")
+    ;;
+  *)
+    ## .vimrc directory
+    export VIMRC_PATH="$HOME/.vimrc"
     ;;
 esac
 
+
+# ------------------------------
 # zsh plugin
 
 ## zsh-autosuggestions
@@ -40,12 +52,18 @@ ZSH_AUTOSUGGEST_STRATEGY="history"
 fpath=(
   "$HOME/.zsh/zsh-completions/src"
   "$HOME/.zsh/git-completions"
+  "$HOME/.zsh/volta-completions"
   $fpath
 )
 
 ## zsh-syntax-highlighting
 source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
+## zsh-ssh
+source "$HOME/.zsh/zsh-ssh/zsh-ssh.zsh"
+
+
+# ------------------------------
 # env variable
 export LANG='en_US.UTF-8'
 bindkey -e
@@ -53,6 +71,8 @@ bindkey -e
 setopt printexitvalue # print exit code
 setopt magic_equal_subst # enable auto complete in command line args
 
+
+# ------------------------------
 # history
 export HISTFILE="${HOME}/.zsh_history"
 export HISTSIZE=1000
@@ -70,12 +90,16 @@ zshaddhistory() {
   whence ${${(z)1}[1]} >| /dev/null || return 1
 }
 
+
+# ------------------------------
 # auto-complete
 zstyle :compinstall filename '~/.zshrc'
 autoload -Uz compinit && compinit
 
 setopt auto_list
 
+
+# ------------------------------
 # alias
 alias rm='rm -i'
 alias cp='cp -i'
@@ -88,15 +112,51 @@ alias la='ls -a'
 alias grep='grep --color=auto'
 
 mcd () {
+  if [ -z "$1" ] || [ "$1" = "-h" ]; then
+    echo "Specify directory name you wanna make."
+    echo "Example:"
+    echo ""
+    echo "    $0 \"dirname\""
+    return
+  fi
+
   mkdir -p $1
   cd $1
 }
 
-# venv ailas
+ssh-init-keygen () {
+  ssh-keygen -t ed25519 -C ""
+}
+
+ssh-init-send-pubkey () {
+  if [ -z "$1" ] || [ "$1" = "-h" ]; then
+    echo "Specify host or ip you wanna have an ssh connection."
+    echo "Example:"
+    echo ""
+    echo "    $0 \"192.168.1.10\""
+    return
+  fi
+
+  ssh-copy-id -i "$HOME/.ssh/id_ed25519.pub" "$1"
+}
+
+ssh-init-host () {
+  if [ -z "$1" ] || [ "$1" = "-h" ]; then
+    echo "Specify host or ip you wanna have an ssh connection."
+    echo "Example:"
+    echo ""
+    echo "    $0 \"192.168.1.10\""
+    return
+  fi
+
+  ssh-keyscan -H -t ed25519 -p 22 "$1" 2>/dev/null | tee -a "$HOME/.ssh/known_hosts" > /dev/null
+}
+
+## venv ailas
 vmk () {
-  if [[ -z "$1" ]]; then
+  if [ -z "$1" ]; then
     py -m venv .venv
-  elif [[ "$1" == "-h" ]]; then
+  elif [ "$1" = "-h" ]; then
     echo "You can optionaly specify version."
     echo "Example:"
     echo ""
@@ -108,7 +168,7 @@ vmk () {
 }
 
 von () {
-  if [[ -d .venv ]]; then
+  if [ -d .venv ]; then
     source ./.venv/Scripts/activate
   else
     echo "Run vmk or make .venv environment."

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ ! -f .env ]; then
   echo "warning!!! plaese make .env file and set some variables"
   exit 1

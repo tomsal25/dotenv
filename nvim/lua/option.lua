@@ -23,7 +23,7 @@ vim.opt.termguicolors = true
 -- remove trailing spaces on save a file
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
-  callback = function(ev)
+  callback = function()
     cursor_pos = vim.fn.getpos(".")
     vim.cmd([[%s/\s\+$//e]])
     vim.fn.setpos(".", cursor_pos)
@@ -33,9 +33,17 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 -- remove trailing line breaks on save a file
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
-  callback = function(ev)
+  callback = function()
     cursor_pos = vim.fn.getpos(".")
     vim.cmd([[%s/\(\r\?\n\)\+\%$//e]])
     vim.fn.setpos(".", cursor_pos)
+  end,
+})
+
+-- remember cursor position
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.api.nvim_exec('silent! normal! g`"zv', false)
   end,
 })
